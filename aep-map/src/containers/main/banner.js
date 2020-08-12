@@ -10,11 +10,9 @@ class Banner extends React.Component{
         return (
             <nav className="navbar navbar=expand-lg navbar-dark bg-dark">
                 <div className="float-left">
-                    <img src={usace} alt="USACE" style={{width:'80px'}}/>
-                    <span style={{width: "5px"}}>  </span>
-                    <img src={fema} alt="FEMA" style={{width:'80px'}}/>
-                    <span style={{width: "10px"}}>      </span>
-                    <a className="navbar-brand" href="/">AEP Map</a>            
+                    <a href = "/"><img src={usace} alt="USACE LOGO" style={{width:'80px'}}/></a>
+                    <a href = "/"><img src={fema} alt="FEMA LOGO" style={{width:'80px', paddingLeft:"5px"}}/></a>
+                    <a className="navbar-brand" href="/" style={{paddingLeft:"15px"}}><b>AEP Map</b></a>            
                 </div>
                 <button className="btn btn-secondary mr-2" onClick={ doAuthLogin } disabled ={ authIsLoggedIn} >
                     {(authIsLoggedIn)?
