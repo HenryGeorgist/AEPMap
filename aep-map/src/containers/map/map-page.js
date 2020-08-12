@@ -19,6 +19,10 @@ import {
 import "@corpsmap/corpsmap/css/corpsmap.css";
 
 class MapPage extends React.Component {
+  componentDidMount(){
+    const { doDrawAEPGridInitializeLayer } = this.props;
+    //doDrawAEPGridInitializeLayer()
+}
   render(){
     return (
         <div className="container-fluid" style={{ padding: 0 }}>
@@ -45,6 +49,6 @@ class MapPage extends React.Component {
   }
 }
 export default connect(
-  'doMapInitialize',
+  'doDrawAEPGridInitializeLayer',
   MapPage
   );

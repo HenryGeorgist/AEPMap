@@ -1,9 +1,10 @@
 
 import 'ol/ol.css';
 import {getLayer} from '@corpsmap/corpsmap/src/openlayers-utils/layer-utilities'
+import exampleTiff from '../resources/Depth (Max).Terrain.stpaul_10ft.tif'
 
 export default {
-    name: 'draw',
+    name: 'drawAEPGrid',
     getReducer:() =>{
         const initialData = {
             shouldInitalize: false,
@@ -15,6 +16,7 @@ export default {
                     return Object.assign({}, state, payload);
                 case "MAP_INITIALIZED":
                 case "CM2_INITIALIZE_FINISHED":
+                case "TREEVIEW_LOADED":
                     return Object.assign({}, state, {
                         shouldInitalize: true
                     });
@@ -23,13 +25,21 @@ export default {
             }
         }
     },
-    doDrawInitializeLayer: () => ({dispatch, store}) => {
+    doDrawAEPGridInitializeLayer: () => ({dispatch, store}) => {
         dispatch({type: 'DRAW_INITIALIZE_STARTED', payload: {shouldInitalize: false}})
         const map = store.selectMap();
         //replace this with a service from the PFRA AEP grid data - then we can have a view of the AEP grids.
+        
+//    const lyr = new ImageLayer({
+//    source: new Static({
+//        url: 'C:\Examples\aepmap\aep-map\src\resources\Depth (Max).Terrain.stpaul_10ft.tif',
+//        projection: projection,
+//       imageExtent: extent,
+//      }),
+//    }) 
         const lyr = getLayer({
-            serviceType: 'ArcGIS',
-            url: "https://basemap.nationalmap.gov/ArcGIS/rest/services/USGSTopo/MapServer"
+            serviceType: 'WMS',
+            url: "C:\Examples\aepmap\aep-map\src\resources\Depth (Max).Terrain.stpaul_10ft.tif"
         })
         map.addLayer(lyr)
         dispatch({
@@ -37,9 +47,6 @@ export default {
         })
     },
     reactDrawShouldInitialize: (state) => {
-        if(state.draw.shouldInitalize) return { actionCreator: 'doDrawInitializeLayer'}
-    },
-    init: (store) =>{
-
+        if(state.drawAEPGrid.shouldInitalize) return { actionCreator: 'doDrawInitializeLayer'}
     }
 }
