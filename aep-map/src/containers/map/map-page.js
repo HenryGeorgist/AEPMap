@@ -17,7 +17,7 @@ import {
   zoomToBox
 } from "@corpsmap/corpsmap";
 import "@corpsmap/corpsmap/css/corpsmap.css";
-import aep from './plugin/index'
+import aep from '../../cm3-plugins/index'
 
 class MapPage extends React.Component {
   render(){
