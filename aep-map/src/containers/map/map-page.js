@@ -30,7 +30,7 @@ class MapPage extends React.Component {
                 bookmarks,
                 coordDisplay,
                 draw,
-                treeView,
+                treeView(),
                 geocoder,
                 identify,
                 measureTools,
