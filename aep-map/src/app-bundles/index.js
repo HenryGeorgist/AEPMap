@@ -11,8 +11,6 @@ import cache from '@corpsmap/corpsmap/src/utils/cache'
 
 import routesBundle from './routes-bundle';
 
-import drawBundle from './draw-bundle';
-
 export default composeBundles(
   routesBundle,
   createUrlBundle(),
@@ -23,6 +21,5 @@ export default composeBundles(
   }),
   createJwtApiBundle({
     root: 'https://x1s6pwmufa.execute-api.us-east-1.amazonaws.com/production'
-  }),
-  drawBundle
+  })
 );

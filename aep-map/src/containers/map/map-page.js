@@ -17,12 +17,9 @@ import {
   zoomToBox
 } from "@corpsmap/corpsmap";
 import "@corpsmap/corpsmap/css/corpsmap.css";
+import aep from './plugin/index'
 
 class MapPage extends React.Component {
-  componentDidMount(){
-    const { doDrawAEPGridInitializeLayer } = this.props;
-    //doDrawAEPGridInitializeLayer()
-}
   render(){
     return (
         <div className="container-fluid" style={{ padding: 0 }}>
@@ -41,7 +38,8 @@ class MapPage extends React.Component {
                 rotateNorth,
                 zoomInOut,
                 zoomHome,
-                zoomToBox
+                zoomToBox,
+                aep()
               ]}
             />        
         </div>
