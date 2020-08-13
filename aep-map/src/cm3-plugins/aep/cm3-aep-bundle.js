@@ -6,7 +6,7 @@ import v4 from "uuid";
 import Static from 'ol/source/ImageStatic';
 import ImageLayer from 'ol/layer/Image';
 import Projection from 'ol/proj/Projection';
-import exampleTiff from '../resources/Depth (Max).Terrain.stpaul_10ft.tif'
+import exampleTiff from '../../resources/Depth (Max).Terrain.stpaul_10ft.tif'
 const AEP_INITALIZE_START='AEP_INITALIZE_START';
 const AEP_INITALIZE_END='AEP_INITALIZE_END';
 const MAP_INITIALIZED='MAP_INITIALIZED';
