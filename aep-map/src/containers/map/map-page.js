@@ -18,13 +18,14 @@ import {
 } from "@corpsmap/corpsmap";
 import "@corpsmap/corpsmap/css/corpsmap.css";
 import aep from '../../cm3-plugins/aep/index'
+import ml from '../../cm3-plugins/ml/index'
 
 class MapPage extends React.Component {
   render(){
     return (
         <div className="container-fluid" style={{ padding: 0 }}>
             <Map
-              theme="grey-cararra"
+              theme="grey"
               plugins={[
                 addData,
                 basemapSwitcher,

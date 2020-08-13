@@ -3,26 +3,27 @@ import Stroke from 'ol/style/Stroke';
 import Fill from 'ol/style/Fill';
 import Text from 'ol/style/Text';
 import v4 from "uuid";
-import Static from 'ol/source/ImageStatic';
-import ImageLayer from 'ol/layer/Image';
-import Projection from 'ol/proj/Projection';
-const NSI_INITALIZE_START='NSI_INITALIZE_START';
-const NSI_INITALIZE_END='NSI_INITALIZE_END';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+
+import GeoJSON from 'ol/format/GeoJSON';
+const ML_INITALIZE_START='NSI_INITALIZE_START';
+const ML_INITALIZE_END='NSI_INITALIZE_END';
 const MAP_INITIALIZED='MAP_INITIALIZED';
 
 const apiHost=process.env.REACT_APP_APIHOST
 
-const getBundle=function(){
+const getBundle=function(config){
   return({
-    name:'nsi',
+    name:'ml',
     getReducer: () => {
       const initialData = {
         _shouldInitialize: false,
       };
       return (state = initialData, { type, payload }) => {
         switch(type){
-          case NSI_INITALIZE_START:
-          case NSI_INITALIZE_END:
+          case ML_INITALIZE_START:
+          case ML_INITALIZE_END:
             return Object.assign({}, state, payload);
           case MAP_INITIALIZED:
             return Object.assign({}, state, {
@@ -33,17 +34,18 @@ const getBundle=function(){
         }
       }
     },
-    doNsiInitialize: () => ({ dispatch, store, anonGet }) => {
+    doMlInitialize: () => ({ dispatch, store, anonGet }) => {
+      config.registerHook(store)
       dispatch({
-        type: NSI_INITALIZE_START,
+        type: ML_INITALIZE_START,
         payload: {
           _shouldInitialize: false,
         }
       })
-      initMap(store);      
+      initMap(store, config);      
     },
     reactAepShouldInitialize: (state) => {
-      if(state.nsi._shouldInitialize) return { actionCreator: "doNsiInitialize" };
+      if(state.ml._shouldInitialize) return { actionCreator: "doMlInitialize" };
     }
   })
 }
@@ -51,22 +53,8 @@ const getBundle=function(){
 export {getBundle as default}
 
 
-const initMap=function(store){
+const initMap=function(store, config){
   const map = store.selectMap();
-  let lyr = null;
-
-  const parentUid = store.selectTreeViewRootId();
-  const uid = v4();
-  store.doAddLayer({
-    uid: uid,
-    displayName: 'National Structure Inventory',
-    parentUid: parentUid,
-    mapLayer: lyr,
-    serviceType: "VectorTile",
-    visible: true,
-    zoomTo: false,
-  });
-  /*
       const root = store.selectTreeRootNode();
   
       let vectorSource=new VectorSource({
@@ -102,7 +90,24 @@ const initMap=function(store){
       var vectorLayer1 = new VectorLayer({
           source:vectorSource,
           style:function(feature){
-            let s=styles('boundary')
+            let s = new Style({
+              stroke: new Stroke({
+                color: '#CCC',
+                width: 2.0
+              }),
+              fill:new Fill({
+                color: 'rgba(0,0,255,0.5)'
+              }),
+              text: new Text({
+                font: '11px "Open Sans", "Arial Unicode MS", "sans-serif"',
+                //placement: 'line',
+                overflow:false,
+                stroke: new Stroke({color:"#FFF", width:2}),
+                fill: new Fill({
+                  color: 'black'
+                })
+              })
+            })
             s.getText().setText(feature.get('modelName'));
             return s;
           } 
@@ -120,7 +125,15 @@ const initMap=function(store){
         source: new VectorSource(),
         map: map,
         style: function(feature) {
-          let highlightStyle=styles('highlight')
+          let highlightStyle = new Style({
+            fill: new Fill({
+              color: 'rgba(255,255,255,0.7)'
+            }),
+            stroke: new Stroke({
+              color: '#3399CC',
+              width: 3
+            })
+          })
           //highlightStyle.getText().setText(feature.get('name'));
           return highlightStyle;
         }
@@ -142,5 +155,4 @@ const initMap=function(store){
           })
         }
       });
-      */
 }
