@@ -40,7 +40,8 @@ class MapPage extends React.Component {
                 zoomInOut,
                 zoomHome,
                 zoomToBox,
-                aep()
+                aep(),
+                ml()
               ]}
             />        
         </div>

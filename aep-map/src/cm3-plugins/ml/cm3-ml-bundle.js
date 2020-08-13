@@ -2,18 +2,17 @@ import Style from 'ol/style/Style';
 import Stroke from 'ol/style/Stroke';
 import Fill from 'ol/style/Fill';
 import Text from 'ol/style/Text';
-import v4 from "uuid";
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 
 import GeoJSON from 'ol/format/GeoJSON';
-const ML_INITALIZE_START='NSI_INITALIZE_START';
-const ML_INITALIZE_END='NSI_INITALIZE_END';
+const ML_INITALIZE_START='ML_INITALIZE_START';
+const ML_INITALIZE_END='ML_INITALIZE_END';
 const MAP_INITIALIZED='MAP_INITIALIZED';
 
 const apiHost=process.env.REACT_APP_APIHOST
 
-const getBundle=function(config){
+const getBundle=function(){
   return({
     name:'ml',
     getReducer: () => {
@@ -35,16 +34,15 @@ const getBundle=function(config){
       }
     },
     doMlInitialize: () => ({ dispatch, store, anonGet }) => {
-      config.registerHook(store)
       dispatch({
         type: ML_INITALIZE_START,
         payload: {
           _shouldInitialize: false,
         }
       })
-      initMap(store, config);      
+      initMap(store);      
     },
-    reactAepShouldInitialize: (state) => {
+    reactMlShouldInitialize: (state) => {
       if(state.ml._shouldInitialize) return { actionCreator: "doMlInitialize" };
     }
   })
@@ -53,7 +51,7 @@ const getBundle=function(config){
 export {getBundle as default}
 
 
-const initMap=function(store, config){
+const initMap=function(store){
   const map = store.selectMap();
       const root = store.selectTreeRootNode();
   
@@ -68,7 +66,7 @@ const initMap=function(store, config){
           var url = `${apiHost}/models/boundaries`;
           var xhr = new XMLHttpRequest();
           xhr.open('GET', url);
-          xhr.setRequestHeader("Authorization", `Bearer ${config.token}`)
+          //xhr.setRequestHeader("Authorization", `Bearer ${config.token}`)
           //var onError = function() {
           //  vectorSource.removeLoadedExtent(extent);
           //}
