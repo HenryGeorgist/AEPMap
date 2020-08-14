@@ -42,7 +42,7 @@ const getBundle=function(){
       })
       initMap(store);      
     },
-    reactAepShouldInitialize: (state) => {
+    reactNsiShouldInitialize: (state) => {
       if(state.nsi._shouldInitialize) return { actionCreator: "doNsiInitialize" };
     }
   })

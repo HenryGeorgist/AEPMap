@@ -118,26 +118,6 @@ const initMap=function(store){
           parentUid:root.uid,
           visible:true,
       })
-
-      var featureOverlay = new VectorLayer({
-        source: new VectorSource(),
-        map: map,
-        style: function(feature) {
-          let highlightStyle = new Style({
-            fill: new Fill({
-              color: 'rgba(255,255,255,0.7)'
-            }),
-            stroke: new Stroke({
-              color: '#3399CC',
-              width: 3
-            })
-          })
-          //highlightStyle.getText().setText(feature.get('name'));
-          return highlightStyle;
-        }
-      });
-
-      let highlight=null;
       vectorLayer1.getSource().on('change', function(event) {
         if(vectorLayer1.getSource().getState()==='ready'){
 
