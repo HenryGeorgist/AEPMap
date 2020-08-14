@@ -10,7 +10,7 @@ const ML_INITALIZE_START='ML_INITALIZE_START';
 const ML_INITALIZE_END='ML_INITALIZE_END';
 const MAP_INITIALIZED='MAP_INITIALIZED';
 
-const apiHost=process.env.REACT_APP_APIHOST
+const apiHost=process.env.REACT_APP_APIHOST_ML
 
 const getBundle=function(){
   return({
