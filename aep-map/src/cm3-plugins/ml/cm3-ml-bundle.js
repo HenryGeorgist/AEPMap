@@ -9,13 +9,11 @@ import GeoJSON from 'ol/format/GeoJSON';
 const ML_INITALIZE_START='ML_INITALIZE_START';
 const ML_INITALIZE_END='ML_INITALIZE_END';
 const MAP_INITIALIZED='MAP_INITIALIZED';
-const UPDATE_PARENT_PROPS='UPDATE_PARENT_PROPS';
+const UPDATE_ML_TOKEN='UPDATE_ML_TOKEN';
 
 const apiHost=process.env.REACT_APP_APIHOST_ML
 
 const getBundle=function(config){
-  console.log(config.test);
-  console.log(config.token);
   return({
     name:'ml',
     getReducer: () => {
@@ -27,7 +25,7 @@ const getBundle=function(config){
         switch(type){
           case ML_INITALIZE_START:
           case ML_INITALIZE_END:
-          case UPDATE_PARENT_PROPS:
+          case UPDATE_ML_TOKEN:
             return Object.assign({}, state, payload);
           case MAP_INITIALIZED:
             return Object.assign({}, state, {
@@ -38,12 +36,10 @@ const getBundle=function(config){
         }
       }
     },
-    doSetParentProps:(parentProps)=>({dispatch, store})=>{
-      dispatch({"type":UPDATE_PARENT_PROPS,payload:{"parentProps":parentProps}});
-      console.log("======================SET TOKEN===========================");
-      console.log(parentProps.authToken)
-      if(parentProps.authToken && parentProps.authToken!=""){
-        initMap(store,parentProps.authToken)
+    doSetMLToken:(token)=>({dispatch, store})=>{
+      dispatch({"type":UPDATE_ML_TOKEN,payload:{"token":token}});
+      if(token.authToken && token.authToken!==""){
+        initMap(store,token.authToken)
       }
     },
     doMlInitialize: () => ({ dispatch, store, anonGet }) => {
@@ -54,18 +50,13 @@ const getBundle=function(config){
           _shouldInitialize: false,
         }
       })
-      //initMap(store,config); 
-
     },
     reactMlShouldInitialize: (state) => {
       if(state.ml._shouldInitialize) return { actionCreator: "doMlInitialize" };
     }
   })
 }
-
 export {getBundle as default}
-
-
 const initMap=function(store,token){
   const map = store.selectMap();
       const root = store.selectTreeRootNode();
@@ -77,7 +68,7 @@ const initMap=function(store,token){
           xhr.open('GET', url);
           xhr.setRequestHeader("Authorization", `Bearer ${token}`)
           xhr.onload = function() {
-            if (xhr.status == 200) {
+            if (xhr.status === 200) {
               let format=vectorSource.getFormat();
               let features = format.readFeatures(xhr.responseText)
               vectorSource.addFeatures(features);

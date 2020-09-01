@@ -4,10 +4,12 @@ import XYZ from 'ol/source/XYZ';
 
 const AEP_INITALIZE_START='AEP_INITALIZE_START';
 const AEP_INITALIZE_END='AEP_INITALIZE_END';
+const UPDATE_AEP_TOKEN='UPDATE_AEP_TOKEN';
 const MAP_INITIALIZED='MAP_INITIALIZED';
 const apiHost=process.env.REACT_APP_APIHOST_AEP
 
-const getBundle=function(){
+const getBundle=function(config){
+  console.log(config)
   return({
     name:'aep',
     getReducer: () => {
@@ -18,6 +20,7 @@ const getBundle=function(){
         switch(type){
           case AEP_INITALIZE_START:
           case AEP_INITALIZE_END:
+          case UPDATE_AEP_TOKEN:
             return Object.assign({}, state, payload);
           case MAP_INITIALIZED:
             return Object.assign({}, state, {
@@ -28,14 +31,20 @@ const getBundle=function(){
         }
       }
     },
+    doSetAEPToken:(token)=>({dispatch, store})=>{
+      dispatch({"type":UPDATE_AEP_TOKEN,payload:{"token":token}});
+      if(token.authToken && token.authToken!==""){
+        initMap(store,token.authToken)
+      }
+    },
     doAepInitialize: () => ({ dispatch, store, anonGet }) => {
+      config.registerAEPHook(store)
       dispatch({
         type: AEP_INITALIZE_START,
         payload: {
           _shouldInitialize: false,
         }
-      })
-      initMap(store);      
+      })   
     },
     reactAepShouldInitialize: (state) => {
       if(state.aep._shouldInitialize) return { actionCreator: "doAepInitialize" };
@@ -150,7 +159,7 @@ const Pluvial_layers = [
     }
 ]
 
-const initMap=function(store){
+const initMap=function(store,token){
     const parentUid = store.selectTreeViewRootId();
     const p_id = v4();
     store.doAddLayer({

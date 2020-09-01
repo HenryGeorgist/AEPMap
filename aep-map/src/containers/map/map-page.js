@@ -19,12 +19,17 @@ import {
 import "@corpsmap/corpsmap/css/corpsmap.css";
 import aep from '../../cm3-plugins/aep/index';
 import ml from '../../cm3-plugins/ml/index';
-let hook = null;
+let mlHook = null;
+let aepHook = null;
+//let nsiHook = null;
 class MapPage extends React.Component {
 
   render(){
-    if(hook){
-      hook(this.props)
+    if(mlHook){
+      mlHook(this.props)
+    }  
+    if(aepHook){
+      aepHook(this.props)
     }  
     const {authToken} = this.props;
     return (
@@ -48,10 +53,15 @@ class MapPage extends React.Component {
                 ml({
                   authToken:authToken,
                   registerHook:function(store){
-                    hook = store.doSetParentProps
+                    mlHook = store.doSetMLToken
                   }
                 }),
-                aep()
+                aep({
+                  authToken:authToken,
+                  registerAEPHook:function(store){
+                    aepHook = store.doSetAEPToken
+                  }
+                })
               ]}
             />        
         </div>
