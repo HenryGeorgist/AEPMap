@@ -47,7 +47,6 @@ class MapPage extends React.Component {
                 zoomToBox,
                 ml({
                   authToken:authToken,
-                  test:"a string, this is a test, thats all i want",
                   registerHook:function(store){
                     hook = store.doSetParentProps
                   }
