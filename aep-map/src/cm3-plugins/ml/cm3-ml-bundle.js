@@ -9,20 +9,25 @@ import GeoJSON from 'ol/format/GeoJSON';
 const ML_INITALIZE_START='ML_INITALIZE_START';
 const ML_INITALIZE_END='ML_INITALIZE_END';
 const MAP_INITIALIZED='MAP_INITIALIZED';
+const UPDATE_PARENT_PROPS='UPDATE_PARENT_PROPS';
 
 const apiHost=process.env.REACT_APP_APIHOST_ML
 
-const getBundle=function(){
+const getBundle=function(config){
+  console.log(config.test);
+  console.log(config.token);
   return({
     name:'ml',
     getReducer: () => {
       const initialData = {
         _shouldInitialize: false,
+
       };
       return (state = initialData, { type, payload }) => {
         switch(type){
           case ML_INITALIZE_START:
           case ML_INITALIZE_END:
+          case UPDATE_PARENT_PROPS:
             return Object.assign({}, state, payload);
           case MAP_INITIALIZED:
             return Object.assign({}, state, {
@@ -33,14 +38,24 @@ const getBundle=function(){
         }
       }
     },
+    doSetParentProps:(parentProps)=>({dispatch, store})=>{
+      dispatch({"type":UPDATE_PARENT_PROPS,payload:{"parentProps":parentProps}});
+      console.log("======================SET TOKEN===========================");
+      console.log(parentProps.authToken)
+      if(parentProps.authToken && parentProps.authToken!=""){
+        initMap(store,parentProps.authToken)
+      }
+    },
     doMlInitialize: () => ({ dispatch, store, anonGet }) => {
+      config.registerHook(store)
       dispatch({
         type: ML_INITALIZE_START,
         payload: {
           _shouldInitialize: false,
         }
       })
-      initMap(store);      
+      //initMap(store,config); 
+
     },
     reactMlShouldInitialize: (state) => {
       if(state.ml._shouldInitialize) return { actionCreator: "doMlInitialize" };
@@ -51,33 +66,22 @@ const getBundle=function(){
 export {getBundle as default}
 
 
-const initMap=function(store){
+const initMap=function(store,token){
   const map = store.selectMap();
       const root = store.selectTreeRootNode();
-  
       let vectorSource=new VectorSource({
         format: new GeoJSON({featureProjection:"EPSG:3857"}),
         loader:function(extent, resolution, projection) {
-          //let token="";
-          //const pp=store.selectParentProps();
-          //if(store.selectParentProps()){
-          //  token=store.selectParentProps().authToken;
-          //}
           var url = `${apiHost}/models/boundaries`;
           var xhr = new XMLHttpRequest();
           xhr.open('GET', url);
-          //xhr.setRequestHeader("Authorization", `Bearer ${config.token}`)
-          //var onError = function() {
-          //  vectorSource.removeLoadedExtent(extent);
-          //}
-          //xhr.onerror = onError;
+          xhr.setRequestHeader("Authorization", `Bearer ${token}`)
           xhr.onload = function() {
             if (xhr.status == 200) {
               let format=vectorSource.getFormat();
               let features = format.readFeatures(xhr.responseText)
               vectorSource.addFeatures(features);
             } else {
-              //onError();
               console.log("ERROR LOADING VECTOR SOURCE")
             }
           }
@@ -91,14 +95,13 @@ const initMap=function(store){
             let s = new Style({
               stroke: new Stroke({
                 color: '#CCC',
-                width: 2.0
+                width: 3.0
               }),
               fill:new Fill({
-                color: 'rgba(0,0,255,0.5)'
+                color: 'rgba(0,0,255,0.0)'
               }),
               text: new Text({
                 font: '11px "Open Sans", "Arial Unicode MS", "sans-serif"',
-                //placement: 'line',
                 overflow:false,
                 stroke: new Stroke({color:"#FFF", width:2}),
                 fill: new Fill({

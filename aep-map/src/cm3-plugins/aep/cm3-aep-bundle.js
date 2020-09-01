@@ -1,11 +1,11 @@
 import v4 from "uuid";
-import Static from 'ol/source/ImageStatic';
-import ImageLayer from 'ol/layer/Image';
-import Projection from 'ol/proj/Projection';
-import exampleTiff from '../../resources/Depth (Max).Terrain.stpaul_10ft.tif'
+import TileLayer from 'ol/layer/Tile';
+import XYZ from 'ol/source/XYZ';
+
 const AEP_INITALIZE_START='AEP_INITALIZE_START';
 const AEP_INITALIZE_END='AEP_INITALIZE_END';
 const MAP_INITIALIZED='MAP_INITIALIZED';
+const apiHost=process.env.REACT_APP_APIHOST_AEP
 
 const getBundle=function(){
   return({
@@ -45,33 +45,169 @@ const getBundle=function(){
 
 export {getBundle as default}
 
+const Pluvial_layers = [
+  {
+    name:"DC",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Adc_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Harrison",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Aharrison_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Brentwood",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Abrentwood_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Highland Park",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Ahighlandpark_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Cedar Rapids",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Acedarrapids_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Renton",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Arenton_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Sacramento",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Asacramento_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Skagit City",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Askagitcity_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Stockton",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Astockton_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Meridian Hills",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Ameridianhiils_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Passic",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Apassaic_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Yuba City",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Ayuba_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Merced",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Amerced_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  },
+  {
+    name:"Des Plains",
+    url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Adesplains_p@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+  }
+]
+  const Fluvial_layers = [
+    {
+      name:"DC",
+      url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Adc_f@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+    },
+    {
+      name:"Cedar Rapids",
+      url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Acedarrapids_f@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+    },
+    {
+      name:"Renton",
+      url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Arenton_f@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+    },
+    {
+      name:"Sacramento",
+      url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Asacramento_f@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+    },
+    {
+      name:"Skagit City",
+      url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Askagitcity_f@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+    },
+    {
+      name:"Stockton",
+      url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Astockton_f@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+    },
+    {
+      name:"Meridian Hills",
+      url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Ameridianhiils_f@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+    },
+    {
+      name:"Passic",
+      url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Apassaic_f@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+    },
+    {
+      name:"Yuba City",
+      url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Ayuba_f@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+    },
+    {
+      name:"Merced",
+      url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Amerced_f@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+    },
+    {
+      name:"Des Plains",
+      url:"https://ec2-34-227-135-215.compute-1.amazonaws.com/geoserver/gwc/service/tms/1.0.0/ml%3Adesplains_f@EPSG%3A900913@png/{z}/{x}/{-y}.png"
+    }
+]
 
 const initMap=function(store){
-  const map = store.selectMap();
-  console.log(map)
-  var extent = [745484.7500000000000000,8008067.9699999997392297, 763614.7500000000000000,8018797.9699999997392297];
-  var projection = new Projection({
-    code: '4269',
-    units: 'ft',
-    extent: extent,
-  });
-  const lyr = new ImageLayer({
-    source: new Static({
-    url: exampleTiff,
-    projection: projection,
-    imageExtent: extent,
-    }),
-  }) 
+    const map = store.selectMap();
+    const parentUid = store.selectTreeViewRootId();
+    const p_id = v4();
+    store.doAddLayer({
+      uid: p_id,
+      displayName: "Pluvial AEP Grids",
+      parentUid: parentUid,
+      mapLayer: null,
+      serviceType: "not a folder",
+      visible: true,
+      zoomTo: false,
+    });
+    const f_id = v4();
+    store.doAddLayer({
+      uid: f_id,
+      displayName: "Fluvial AEP Grids",
+      parentUid: parentUid,
+      mapLayer: null,
+      serviceType: "not a folder",
+      visible: true,
+      zoomTo: false,
+    });
+    Pluvial_layers.forEach((layer)=>{
+      let wms = new TileLayer({
+        source: new XYZ({
+          url:layer.url,
+        }),
+      })
+      
+      const uid = v4();
+      store.doAddLayer({
+        uid: uid,
+        displayName: layer.name,
+        parentUid: p_id,
+        mapLayer: wms,
+        serviceType: "TMS",
+        visible: false,
+        zoomTo: false,
+      });      
+    });
+    Fluvial_layers.forEach((layer)=>{
+      let wms = new TileLayer({
+        source: new XYZ({
+          url:layer.url,
+        }),
+      })
+      
+      const uid = v4();
+      store.doAddLayer({
+        uid: uid,
+        displayName: layer.name,
+        parentUid: f_id,
+        mapLayer: wms,
+        serviceType: "TMS",
+        visible: true,
+        zoomTo: false,
+      });      
+    });
 
-  const parentUid = store.selectTreeViewRootId();
-  const uid = v4();
-  store.doAddLayer({
-    uid: uid,
-    displayName: 'AEP Grid',
-    parentUid: parentUid,
-    mapLayer: lyr,
-    serviceType: "LocalGeoTif",
-    visible: true,
-    zoomTo: false,
-  });
 }

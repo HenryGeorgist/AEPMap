@@ -17,11 +17,16 @@ import {
   zoomToBox
 } from "@corpsmap/corpsmap";
 import "@corpsmap/corpsmap/css/corpsmap.css";
-import aep from '../../cm3-plugins/aep/index'
-import ml from '../../cm3-plugins/ml/index'
-
+import aep from '../../cm3-plugins/aep/index';
+import ml from '../../cm3-plugins/ml/index';
+let hook = null;
 class MapPage extends React.Component {
+
   render(){
+    if(hook){
+      hook(this.props)
+    }  
+    const {authToken} = this.props;
     return (
         <div className="container-fluid" style={{ padding: "0" }}>
             <Map
@@ -40,8 +45,14 @@ class MapPage extends React.Component {
                 zoomInOut,
                 zoomHome,
                 zoomToBox,
-                aep(),
-                ml()
+                ml({
+                  authToken:authToken,
+                  test:"a string, this is a test, thats all i want",
+                  registerHook:function(store){
+                    hook = store.doSetParentProps
+                  }
+                }),
+                aep()
               ]}
             />        
         </div>
@@ -50,5 +61,6 @@ class MapPage extends React.Component {
 }
 export default connect(
   'doDrawAEPGridInitializeLayer',
+  'selectAuthToken',
   MapPage
   );

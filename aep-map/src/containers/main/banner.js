@@ -6,7 +6,8 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 class Banner extends React.Component{
     render(){
-        let { doAuthLogin, authIsLoggedIn} = this.props;
+        const { doAuthFetchToken, authToken} = this.props;
+        const authIsLoggedIn = (authToken)?true:false;
         return (
             <nav className="navbar navbar=expand-lg navbar-dark bg-dark">
                 <div className="float-left">
@@ -14,7 +15,7 @@ class Banner extends React.Component{
                     <a href = "/"><img src={fema} alt="FEMA LOGO" style={{width:'45px', paddingLeft:"5px"}}/></a>
                     <a className="navbar-brand" href="/" style={{paddingLeft:"15px"}}><b>AEP Map</b></a>            
                 </div>
-                <button className="btn btn-secondary mr-2" onClick={ doAuthLogin } disabled ={ authIsLoggedIn} >
+                <button className="btn btn-secondary mr-2" onClick={ doAuthFetchToken } disabled ={ authIsLoggedIn} >
                     {(authIsLoggedIn)?
                         ("My Account"):
                         ("Sign In")
@@ -26,9 +27,7 @@ class Banner extends React.Component{
     }
 }
 export default connect(
-    'doAuthLogin',
-    'doAuthLogout',
-    'selectAuthIsLoggedIn',
-    'selectAuthUsername',
+    'doAuthFetchToken',
+    'selectAuthToken',
     Banner
 );

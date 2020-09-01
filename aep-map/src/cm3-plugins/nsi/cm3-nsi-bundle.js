@@ -1,16 +1,9 @@
-import Style from 'ol/style/Style';
-import Stroke from 'ol/style/Stroke';
-import Fill from 'ol/style/Fill';
-import Text from 'ol/style/Text';
 import v4 from "uuid";
-import Static from 'ol/source/ImageStatic';
-import ImageLayer from 'ol/layer/Image';
-import Projection from 'ol/proj/Projection';
 const NSI_INITALIZE_START='NSI_INITALIZE_START';
 const NSI_INITALIZE_END='NSI_INITALIZE_END';
 const MAP_INITIALIZED='MAP_INITIALIZED';
 
-const apiHost=process.env.REACT_APP_APIHOST
+const apiHost=process.env.REACT_APP_APIHOST_NSI
 
 const getBundle=function(){
   return({
@@ -66,81 +59,4 @@ const initMap=function(store){
     visible: true,
     zoomTo: false,
   });
-  /*
-      const root = store.selectTreeRootNode();
-  
-      let vectorSource=new VectorSource({
-        format: new GeoJSON({featureProjection:"EPSG:3857"}),
-        loader:function(extent, resolution, projection) {
-          //let token="";
-          //const pp=store.selectParentProps();
-          //if(store.selectParentProps()){
-          //  token=store.selectParentProps().authToken;
-          //}
-          var url = `${apiHost}/models/boundaries`;
-          var xhr = new XMLHttpRequest();
-          xhr.open('GET', url);
-          xhr.setRequestHeader("Authorization", `Bearer ${config.token}`)
-          //var onError = function() {
-          //  vectorSource.removeLoadedExtent(extent);
-          //}
-          //xhr.onerror = onError;
-          xhr.onload = function() {
-            if (xhr.status == 200) {
-              let format=vectorSource.getFormat();
-              let features = format.readFeatures(xhr.responseText)
-              vectorSource.addFeatures(features);
-            } else {
-              //onError();
-              console.log("ERROR LOADING VECTOR SOURCE")
-            }
-          }
-          xhr.send();
-        }
-      });
-
-      var vectorLayer1 = new VectorLayer({
-          source:vectorSource,
-          style:function(feature){
-            let s=styles('boundary')
-            s.getText().setText(feature.get('modelName'));
-            return s;
-          } 
-      });
-   
-      store.doAddLayer({
-          mapLayer:vectorLayer1,
-          displayName:"Model Boundaries",
-          type:"notfolder",
-          parentUid:root.uid,
-          visible:true,
-      })
-
-      var featureOverlay = new VectorLayer({
-        source: new VectorSource(),
-        map: map,
-        style: function(feature) {
-          let highlightStyle=styles('highlight')
-          //highlightStyle.getText().setText(feature.get('name'));
-          return highlightStyle;
-        }
-      });
-
-      let highlight=null;
-      vectorLayer1.getSource().on('change', function(event) {
-        if(vectorLayer1.getSource().getState()==='ready'){
-
-          map.on('click',function(evt) {
-            console.log(evt.pixel)
-          })
-
-          map.on('pointermove', function(evt) {
-            if (evt.dragging) {
-              return;
-            }
-            console.log(evt)
-          })
-        }
-      });
-      */
 }
