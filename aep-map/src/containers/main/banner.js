@@ -6,8 +6,8 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 class Banner extends React.Component{
     render(){
-        const { doAuthFetchToken, authToken} = this.props;
-        const authIsLoggedIn = (authToken)?true:false;
+        const { doAuthFetchToken, authMLToken} = this.props;
+        const authIsLoggedIn = (authMLToken)?true:false; //check if NSI and ML are logged on?
         return (
             <nav className="navbar navbar=expand-lg navbar-dark bg-dark">
                 <div className="float-left">
@@ -27,7 +27,7 @@ class Banner extends React.Component{
     }
 }
 export default connect(
-    'doAuthFetchToken',
-    'selectAuthToken',
+    'doAuthFetchTokens',
+    'selectAuthMLToken',
     Banner
 );
